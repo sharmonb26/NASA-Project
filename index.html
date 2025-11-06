@@ -14,6 +14,10 @@
     </header>
 
     <div class="filters">
+      <div class="date-inputs">
+        <input type="date" id="startDate" aria-label="Start Date">
+        <input type="date" id="endDate" aria-label="End Date">
+      </div>
       <button id="getImageBtn">Fetch Space Images</button>
     </div>
 
@@ -21,6 +25,21 @@
       <div class="placeholder">
         <div class="placeholder-icon">🔭</div>
         <p>Click "Fetch Space Images" to explore the cosmos!</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="gallery-container"></div>
+
+  <!-- Add modal structure -->
+  <div id="imageModal" class="modal">
+    <div class="modal-content">
+      <span class="close-btn">&times;</span>
+      <div class="modal-media"></div>
+      <div class="modal-info">
+        <h2 class="modal-title"></h2>
+        <p class="modal-date"></p>
+        <p class="modal-explanation"></p>
       </div>
     </div>
   </div>
