@@ -1,5 +1,5 @@
 // Use this URL to fetch NASA APOD JSON data
-const apodData = 'https://cdn.jsdelivr.net/gh/GCA-Classroom/apod/data.json';
+const apodData = "https://cdn.jsdelivr.net/gh/GCA-Classroom/apod/data.json";
 
 // Select DOM elements
 const getImageBtn = document.getElementById('getImageBtn');
@@ -69,40 +69,31 @@ getImageBtn.addEventListener('click', async () => {
 
     // Show a loading message immediately
     gallery.innerHTML = `<div class="loading" style="text-align:center;padding:20px;font-size:18px;">Loading images...</div>`;
+        try {
+            // Show a loading message
+            gallery.innerHTML = `<div class="loading" style="text-align:center;padding:20px;font-size:18px;">Loading images...</div>`;
 
-    try {
-        // Start fetch and delay at the same time
-        const fetchPromise = fetch(apodData).then(res => res.json());
-        const delayPromise = new Promise(resolve => setTimeout(resolve, 1200)); // 1.2 seconds
+            // Fetch the APOD data
+            const fetchPromise = fetch(apodData).then(res => res.json());
+            const delayPromise = new Promise(resolve => setTimeout(resolve, 1200)); // 1.2 seconds
 
-        // Wait for both to finish (ensures loading shows at least 1.2s)
-        const [data] = await Promise.all([fetchPromise, delayPromise]);
+            // Wait for both to finish
+            const [data] = await Promise.all([fetchPromise, delayPromise]);
 
-        // Filter images based on selected date range
-        const filteredImages = data.filter(item => item.date >= startDate && item.date <= endDate);
+            // BEGINNER DEBUGGING: Log available dates
+            console.log('Available dates:', data.map(item => item.date));
 
-        if (filteredImages.length === 0) {
-            gallery.innerHTML = `
-                <div class="placeholder">
-                    <div class="placeholder-icon">🔍</div>
-                    <p>No images found for selected dates. Please try a different date range.</p>
-                </div>
-            `;
-            return;
+            // Sort by date
+            const sortedImages = data.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+            // Replace loading with gallery
+            gallery.innerHTML = '';
+            displayGallery(sortedImages);
+        } catch (error) {
+            await new Promise(resolve => setTimeout(resolve, 1200));
+            console.error('Error fetching APOD data:', error);
+            gallery.innerHTML = '<p style="text-align:center;">Error loading images. Please try again.</p>';
         }
-
-        // Sort by date
-        const sortedImages = filteredImages.sort((a, b) => new Date(a.date) - new Date(b.date));
-
-        // Replace loading with gallery
-        gallery.innerHTML = '';
-        displayGallery(sortedImages);
-    } catch (error) {
-        // Ensure loading message is removed after delay
-        await new Promise(resolve => setTimeout(resolve, 1200));
-        console.error('Error fetching APOD data:', error);
-        gallery.innerHTML = '<p style="text-align:center;">Error loading images. Please try again.</p>';
-    }
 });
 
 // Close modal when clicking close button or outside
